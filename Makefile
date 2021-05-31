@@ -34,6 +34,7 @@ all: $(EXECUTABLE) $(STATIC_LIB) $(SO_LIBRARY)
 
 $(EXECUTABLE): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) Source/Sample/Main.cpp -o $@ $^
+	cp -n in1.jpg in2.png in3.txt Bin/
 
 $(STATIC_LIB): $(OBJS)
 	ar rcs $@ $^
@@ -48,7 +49,7 @@ $(SO_LIBRARY): $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf `find Source -name '*.o'` ziplib.tar.gz Bin/*.zip Bin/out* $(EXECUTABLE) $(SO_LIBRARY) $(STATIC_LIB)
+	rm -rf `find Source -name '*.o'` ziplib.tar.gz Bin/* $(EXECUTABLE) $(SO_LIBRARY) $(STATIC_LIB)
 
 tarball:
 	tar -zcvf ziplib.tar.gz *
