@@ -7,7 +7,7 @@ STATIC_LIB = Bin/libzip.a
 CC        = clang
 CXX       = clang++
 CFLAGS    = -fPIC -Wno-enum-conversion -O3
-CXXFLAGS  = -fPIC -std=c++11 -O3
+CXXFLAGS  = -fPIC -std=c++17 -O3
 
 # Linker flags
 LDFLAGS   = -pthread
