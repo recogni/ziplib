@@ -34,7 +34,7 @@ all: $(EXECUTABLE) $(STATIC_LIB) $(SO_LIBRARY)
 
 $(EXECUTABLE): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) Source/Sample/Main.cpp -o $@ $^
-	cp -n in1.jpg in2.png in3.txt Bin/
+	cp -n Source/Sample/in1.jpg Source/Sample/in2.png Source/Sample/in3.txt Bin/
 
 $(STATIC_LIB): $(OBJS)
 	ar rcs $@ $^
