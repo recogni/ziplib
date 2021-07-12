@@ -1,13 +1,17 @@
+# Installation Config
+PREFIX		?= /usr
+
 # Final names of binaries
-EXECUTABLE = Bin/zipsample
-SO_LIBRARY = Bin/libzip.so
-STATIC_LIB = Bin/libzip.a
+LIB_NAME	= zip
+EXECUTABLE	= Bin/zipsample
+SO_LIBRARY	= Bin/lib$(LIB_NAME).so
+STATIC_LIB	= Bin/lib$(LIB_NAME).a
 
 # C & C++ compiler
-CC        = clang
-CXX       = clang++
-CFLAGS    = -fPIC -Wno-enum-conversion -O3
-CXXFLAGS  = -fPIC -std=c++17 -O3
+CC        ?= clang
+CXX       ?= clang++
+CFLAGS    ?= -fPIC -Wno-enum-conversion -O3
+CXXFLAGS  ?= -fPIC -std=c++17 -O3
 
 # Linker flags
 LDFLAGS   = -pthread
@@ -31,15 +35,28 @@ OBJS = \
 
 # Rules
 all: $(EXECUTABLE) $(STATIC_LIB) $(SO_LIBRARY)
+.PHONY: all
 
-$(EXECUTABLE): $(OBJS)
+shared-lib: $(SO_LIBRARY)
+.PHONY: shared-lib
+
+static-lib: $(STATIC_LIB)
+.PHONY: static-lib
+
+sample: $(EXECUTABLE)
+.PHONY: sample
+
+bindir:
+	mkdir -p Bin
+
+$(EXECUTABLE): $(OBJS) | bindir
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) Source/Sample/Main.cpp -o $@ $^
 	cp -n Source/Sample/in1.jpg Source/Sample/in2.png Source/Sample/in3.txt Bin/
 
-$(STATIC_LIB): $(OBJS)
+$(STATIC_LIB): $(OBJS) | bindir
 	ar rcs $@ $^
 
-$(SO_LIBRARY): $(OBJS)
+$(SO_LIBRARY): $(OBJS) | bindir
 	$(CXX) $(LDFLAGS) -shared -o $@ $^
 
 %.o: %.cpp
@@ -50,7 +67,12 @@ $(SO_LIBRARY): $(OBJS)
 
 clean:
 	rm -rf `find Source -name '*.o'` ziplib.tar.gz Bin/* $(EXECUTABLE) $(SO_LIBRARY) $(STATIC_LIB)
+.PHONY: clean
 
-tarball:
-	tar -zcvf ziplib.tar.gz *
-	
+tell-libs:
+	@echo -l$(LIB_NAME)
+
+install:
+	cp $(SO_LIBRARY) $(STATIC_LIB) $(PREFIX)/lib 2> /dev/null || true
+	cp $(EXECUTABLE) $(PREFIX)/bin 2> /dev/null || true
+	cd Source/ZipLib && find . -name '*.h' -exec cp --parents {} $(PREFIX)/include \;
