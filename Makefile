@@ -73,6 +73,7 @@ tell-libs:
 	@echo -l$(LIB_NAME)
 
 install:
+	mkdir -p $(PREFIX)/include/ziplib
 	cp $(SO_LIBRARY) $(STATIC_LIB) $(PREFIX)/lib 2> /dev/null || true
 	cp $(EXECUTABLE) $(PREFIX)/bin 2> /dev/null || true
-	cd Source/ZipLib && find . -name '*.h' -exec cp --parents {} $(PREFIX)/include \;
+	cd Source/ZipLib && find . -name '*.h' -exec cp --parents {} $(PREFIX)/include/ziplib \;
